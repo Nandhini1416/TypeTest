@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Typing Speed Test</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background-color: #222;
+      color: #fff;
+      padding: 40px;
+    }
+    #quote {
+      font-size: 20px;
+      margin-bottom: 20px;
+      background: #333;
+      padding: 20px;
+      border-radius: 10px;
+    }
+    #input {
+      width: 100%;
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 5px;
+      margin-bottom: 20px;
+    }
+    .stats {
+      margin: 10px 0;
+    }
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background: #28a745;
+      border: none;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Typing Speed Test</h1>
+  <div id="quote">Loading...</div>
+  <input type="text" id="input" placeholder="Start typing here..." disabled />
+  <div class="stats">
+    <p>Time: <span id="timer">60</span> seconds</p>
+    <p>WPM: <span id="wpm">0</span></p>
+    <p>Accuracy: <span id="accuracy">0</span>%</p>
+  </div>
+  <button onclick="startTest()">Start Test</button>
+
+  <script>
+    const quotes = [
+      "The quick brown fox jumps over the lazy dog.",
+      "JavaScript is a versatile programming language.",
+      "Practice makes perfect when learning to code.",
+      "Typing speed improves with regular practice.",
+      "Debugging is twice as hard as writing the code."
+    ];
+
+    let timer;
+    let timeLeft = 60;
+    let totalTyped = 0;
+    let correctChars = 0;
+
+    const quoteEl = document.getElementById("quote");
+    const inputEl = document.getElementById("input");
+    const timerEl = document.getElementById("timer");
+    const wpmEl = document.getElementById("wpm");
+    const accuracyEl = document.getElementById("accuracy");
+
+    let currentQuote = "";
+
+    function startTest() {
+      resetTest();
+      currentQuote = quotes[Math.floor(Math.random() * quotes.length)];
+      quoteEl.textContent = currentQuote;
+      inputEl.disabled = false;
+      inputEl.focus();
+
+      timer = setInterval(() => {
+        timeLeft--;
+        timerEl.textContent = timeLeft;
+        if (timeLeft === 0) {
+          clearInterval(timer);
+          inputEl.disabled = true;
+          showResults();
+        }
+      }, 1000);
+    }
+
+    function resetTest() {
+      timeLeft = 60;
+      totalTyped = 0;
+      correctChars = 0;
+      inputEl.value = "";
+      wpmEl.textContent = 0;
+      accuracyEl.textContent = 0;
+      timerEl.textContent = timeLeft;
+      clearInterval(timer);
+    }
+
+    inputEl.addEventListener("input", () => {
+      const inputText = inputEl.value;
+      totalTyped = inputText.length;
+      correctChars = 0;
+
+      for (let i = 0; i < inputText.length; i++) {
+        if (inputText[i] === currentQuote[i]) {
+          correctChars++;
+        }
+      }
+
+      const wordsTyped = inputText.trim().split(/\s+/).length;
+      const minutes = (60 - timeLeft) / 60;
+      const wpm = Math.round(wordsTyped / minutes) || 0;
+      const accuracy = Math.round((correctChars / totalTyped) * 100) || 0;
+
+      wpmEl.textContent = wpm;
+      accuracyEl.textContent = accuracy;
+    });
+
+    function showResults() {
+      inputEl.disabled = true;
+      alert("Test Complete!\nWPM: " + wpmEl.textContent + "\nAccuracy: " + accuracyEl.textContent + "%");
+    }
+  </script>
+
+</body>
+</html>
+
